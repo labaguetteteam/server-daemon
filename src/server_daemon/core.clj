@@ -1,13 +1,13 @@
-(ns uber-server.core
+(ns server-daemon.core
+  (:gen-class)
   (:require [org.httpkit.client :as http]))
 
-; (def options {:timeout 200             ; ms
-;               :basic-auth ["user" "pass"]
-;               :query-params {:param "value" :param2 ["value1" "value2"]}
-;               :user-agent "User-Agent-string"
-;               :headers {"X-Header" "Value"}})
-
-(def options {})
+(def options {
+              ; :timeout 200
+              ; :basic-auth ["user" "pass"]
+              ; :query-params {:param "value" :param2 ["value1" "value2"]}
+              ; :user-agent "User-Agent-string"
+              :headers {"Authorization" "Token 0v0MQyxN4SXhYkpPQMWy9crK7mFE7UViePyBvxMN"}})
 
 (defn -main
   "I don't do a whole lot ... yet."
