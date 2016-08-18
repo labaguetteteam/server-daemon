@@ -16,12 +16,12 @@
 (defn get-price
   "Call the Uber API to get the price"
   [options]
-  (println "Run estimates/get-price... " (:serverToken options))
+  (println "[RUN] estimates/get-price... ")
+  (println "[PARAMS] Server Token : " (:serverToken options))
   (http/get "https://api.uber.com/v1/estimates/price" (generate-options (:serverToken options))
           (fn [{:keys [status headers body error]}]
             (if error
               (println "[ERROR] Exception is " error)
               (do
                 (println "[HTTP] GET : " status)
-                (println "[BODY] : " (json/read-str body))))))
-  (loop [] (recur)))
+                (println "[BODY] : " (json/read-str body)))))))
