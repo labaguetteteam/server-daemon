@@ -1,6 +1,8 @@
 (ns server-daemon.estimates-api
   (:gen-class)
   (:require [org.httpkit.client :as http]
+            [server-daemon.channels :as channels]
+            [clojure.core.async :refer [go-loop go chan put! <!]]
             [clojure.data.json :as json]))
 
 (defn generate-options
@@ -13,6 +15,10 @@
                   :seat_count 2}
    :headers {"Authorization" (str "Token " server-token)}})
 
+(defn find-uberx-surge-multiplier [index item]
+  (when (= "uberX" (:display_name item))
+    (:surge_multiplier item)))
+
 (defn get-price
   "Call the Uber API to get the price"
   [options]
@@ -24,4 +30,11 @@
               (println "[ERROR] Exception is " error)
               (do
                 (println "[HTTP] GET : " status)
-                (println "[BODY] : " (json/read-str body)))))))
+                (println "[BODY] : " body)
+                (let [api-result (json/read-str body
+                                                :key-fn keyword)]
+                  (let [surge (map-indexed
+                               (fn [index item](find-uberx-surge-multiplier index item))
+                               (get-in api-result [:prices]))]
+                    (put! channels/pipe [{:message :surge_multiplier
+                                          :value (first (filter some? surge))}]))))))))
