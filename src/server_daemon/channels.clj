@@ -10,8 +10,8 @@
 
 (defn process-channel [channel]
   (go-loop []
-      (when-let [e (<! channel)]
-        (process-message e)
-        (recur))))
+    (when-let [e (<! channel)]
+      (process-message e)
+      (recur))))
 
 (def pipe (chan))
