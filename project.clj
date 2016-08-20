@@ -8,6 +8,7 @@
                  [http-kit "2.1.18"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.cli "0.3.5"]
+                 [amazonica "0.3.74"]
                  [overtone/at-at "1.2.0"]]
   :main ^:skip-aot server-daemon.core
   :target-path "target/%s"
