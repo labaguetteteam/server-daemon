@@ -3,7 +3,8 @@
             [server-daemon.estimates-api :as estimates-api]
             [server-daemon.dynamodb :as dynamodb]
             [server-daemon.weather :as weather]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.tools.logging :as log]))
 
 (use 'overtone.at-at)
 
@@ -28,7 +29,7 @@
         options (:options x)
         api-result (:value x)
         weather (get-in api-result [:weather 0 :description])]
-    (println "[WEATHER]" weather)
+    (log/info "[WEATHER]" weather)
     (estimates-api/get-price options api-options weather)))
 
 (defmethod process-message :estimates-api-result
@@ -51,10 +52,10 @@
                   (fn [index item] (when (= "uberX" (:display_name item))
                                      (:duration item)))
                   (:value x))]
-    (println "[SURGE_MULTIPLIER] : " (first (filter some? surge)))
-    (println "[DURATION] : " (first (filter some? duration)))
-    (println "[ESTIMATION UBER POOL] : " (first (filter some? estimates-pool)))
-    (println "[ESTIMATION UBER X] : " (first (filter some? estimates-x)))
+    (log/info "[SURGE_MULTIPLIER] : " (first (filter some? surge)))
+    (log/info "[DURATION] : " (first (filter some? duration)))
+    (log/info "[ESTIMATION UBER POOL] : " (first (filter some? estimates-pool)))
+    (log/info "[ESTIMATION UBER X] : " (first (filter some? estimates-x)))
     (dynamodb/save-price (:options x) {:surge_multiplier (first (filter some? surge))
                                        :duration (first (filter some? duration))
                                        :estimation_pool (first (filter some? estimates-pool))

@@ -3,7 +3,8 @@
   (:require [org.httpkit.client :as http]
             [server-daemon.pipe :as pipe-file]
             [clojure.core.async :refer [go-loop go chan put! <!]]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [clojure.tools.logging :as log]))
 
 (defn generate-options
   "Generate Options for the Uber API"
@@ -22,15 +23,15 @@
 (defn get-price
   "Call the Uber API to get the price"
   [options api-options weather]
-  (println "[RUN] estimates/get-price... ")
-  (println "[PARAMS] Server Token : " (:serverToken options))
+  (log/info "[RUN] estimates/get-price... ")
+  (log/info "[PARAMS] Server Token : " (:serverToken options))
   (http/get "https://api.uber.com/v1/estimates/price" (generate-options (:serverToken options) api-options)
           (fn [{:keys [status headers body error]}]
             (if error
-              (println "[ERROR] Exception is " error)
+              (log/info "[ERROR] Exception is " error)
               (do
-                (println "[HTTP] GET : " status)
-                (println "[BODY] : " body)
+                (log/info "[HTTP] GET : " status)
+                (log/info "[BODY] : " body)
                 (let [api-result (json/read-str body
                                                 :key-fn keyword)]
                   (put! pipe-file/pipe [{:message :estimates-api-result

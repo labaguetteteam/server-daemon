@@ -2,7 +2,8 @@
   (:require [server-daemon.pipe :as pipe-file]
             [server-daemon.tools :as tools]
             [org.httpkit.client :as http]
-            [clojure.core.async :refer [go-loop go chan put! <!]])
+            [clojure.core.async :refer [go-loop go chan put! <!]]
+            [clojure.tools.logging :as log])
   (:use [amazonica.aws.dynamodbv2]))
 
 (defn cred [options] {:access-key (:awsAccessKey options)
@@ -40,7 +41,7 @@
                   :provisioned-throughput
                   {:read-capacity-units 1
                    :write-capacity-units 1})
-    (catch Exception e (println "[INFORMATION] The table already exist")))
+    (catch Exception e (log/info "[INFORMATION] The table already exist")))
 
   (time (Thread/sleep 10000))
   (put! pipe-file/pipe [{:message :database-ready
