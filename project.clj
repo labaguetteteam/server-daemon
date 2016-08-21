@@ -8,7 +8,13 @@
                  [http-kit "2.1.18"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/tools.cli "0.3.5"]
-                 [overtone/at-at "1.2.0"]]
+                 [amazonica "0.3.74"]
+                 [overtone/at-at "1.2.0"]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [log4j/log4j "1.2.17" :exclusions [javax.mail/mail
+                                                    javax.jms/jms
+                                                    com.sun.jdmk/jmxtools
+                                                    com.sun.jmx/jmxri]]]
   :main ^:skip-aot server-daemon.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
